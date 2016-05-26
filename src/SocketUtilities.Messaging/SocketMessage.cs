@@ -11,7 +11,7 @@ namespace SocketUtilities.Messaging
     {
         private string _messageString;
         private byte[] _messageBytes;
-        private Encoding _encoding;
+
         public SocketMessage(int messageBufferSize = 2048)
             : this(Encoding.UTF8, SocketMessageType.Normal, String.Empty, messageBufferSize)
         {
