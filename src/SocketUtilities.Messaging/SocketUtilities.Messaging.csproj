@@ -59,19 +59,18 @@
   <ItemGroup>
     <Compile Include="Attributes\AdditionalMethodInfoAttribute.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="MethodHandling\MethodCallDto.cs" />
-    <Compile Include="MethodHandling\MethodSignatureDto.cs" />
-    <Compile Include="MethodHandling\TypeDto.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="MethodCallDto.cs" />
+    <Compile Include="MethodSignatureDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketMessage.cs" />
     <Compile Include="SocketMessageType.cs" />
+    <Compile Include="TypeDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RpcSocket.Core\SocketUtilities.Core.csproj">
+    <ProjectReference Include="..\SocketUtilities.Core\SocketUtilities.Core.csproj">
       <Project>{173664AB-0713-4F41-9DA3-FD40290DB5BF}</Project>
       <Name>SocketUtilities.Core</Name>
     </ProjectReference>

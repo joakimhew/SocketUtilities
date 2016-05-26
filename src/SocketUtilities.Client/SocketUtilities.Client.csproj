@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RpcSocket.Messaging\SocketUtilities.Messaging.csproj">
+    <ProjectReference Include="..\SocketUtilities.Messaging\SocketUtilities.Messaging.csproj">
       <Project>{f6bf110f-920b-4522-8158-fb0dd3366798}</Project>
       <Name>SocketUtilities.Messaging</Name>
     </ProjectReference>

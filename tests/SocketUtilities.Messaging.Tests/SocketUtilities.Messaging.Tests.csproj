@@ -64,14 +64,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MethodCallTests.cs" />
     <Compile Include="MethodSignatureTests.cs" />
     <Compile Include="SocketMessageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\RpcSocket.Messaging\SocketUtilities.Messaging.csproj">
+    <ProjectReference Include="..\..\src\SocketUtilities.Messaging\SocketUtilities.Messaging.csproj">
       <Project>{f6bf110f-920b-4522-8158-fb0dd3366798}</Project>
       <Name>SocketUtilities.Messaging</Name>
     </ProjectReference>
