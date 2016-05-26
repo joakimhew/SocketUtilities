@@ -32,9 +32,12 @@ namespace SocketUtilities.Core
                 StackTrace = includeStackTrace ? Environment.StackTrace : null
             };
 
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
+            var serialized = logFormat.Serialize();
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(serialized);
+#endif
 
-            WriteToFile("debug.log", logFormat.Serialize());
+            WriteToFile("debug.log", serialized);
         }
 
         public void Info(string message, bool includeStackTrace = false, string memberName = "", 
@@ -49,11 +52,12 @@ namespace SocketUtilities.Core
                 StackTrace = includeStackTrace ? Environment.StackTrace : null
             };
 
+            var serialized = logFormat.Serialize();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
+            System.Diagnostics.Debug.WriteLine(serialized);
 #endif
 
-            WriteToFile("info.log", logFormat.Serialize());
+            WriteToFile("info.log", serialized);
         }
 
         public void Warn(string message, bool includeStackTrace = false, string memberName = "", 
@@ -68,11 +72,12 @@ namespace SocketUtilities.Core
                 StackTrace = includeStackTrace ? Environment.StackTrace : null
             };
 
+            var serialized = logFormat.Serialize();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
+            System.Diagnostics.Debug.WriteLine(serialized);
 #endif
 
-            WriteToFile("warn.log", logFormat.Serialize());
+            WriteToFile("warn.log", serialized);
 
         }
 
@@ -88,11 +93,12 @@ namespace SocketUtilities.Core
                 StackTrace = includeStackTrace ? Environment.StackTrace : null
             };
 
+            var serialized = logFormat.Serialize();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
+            System.Diagnostics.Debug.WriteLine(serialized);
 #endif
 
-            WriteToFile("error.log", logFormat.Serialize());
+            WriteToFile("error.log", serialized);
         }
 
         public void Fatal(string message, bool includeStackTrace = false, string memberName = "",
@@ -107,106 +113,43 @@ namespace SocketUtilities.Core
                 StackTrace = includeStackTrace ? Environment.StackTrace : null
             };
 
+            var serialized = logFormat.Serialize();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
+            System.Diagnostics.Debug.WriteLine(serialized);
 #endif
 
-            WriteToFile("fatal.log", logFormat.Serialize());
+            WriteToFile("fatal.log", serialized);
+        }
+
+
+        public void Debug(Exception exception, bool includeStackTrace = false, string memberName = "",
+           string sourceFilePath = "", int sourceLineNumber = 0)
+        {
+            Debug(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
 
         public void Info(Exception exception, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
-            var logFormat = new LogFormat
-            {
-                MemberName = memberName,
-                Message = exception.Message,
-                SourceFilePath = sourceFilePath,
-                SourceLineNumber = sourceLineNumber,
-                StackTrace = includeStackTrace ? Environment.StackTrace : null
-            };
-
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
-#endif
-
-            WriteToFile("info.log", logFormat.Serialize());
-        }
-
-        public void Debug(Exception exception, bool includeStackTrace = false, string memberName = "", 
-            string sourceFilePath = "", int sourceLineNumber = 0)
-        {
-            var logFormat = new LogFormat
-            {
-                MemberName = memberName,
-                Message = exception.Message,
-                SourceFilePath = sourceFilePath,
-                SourceLineNumber = sourceLineNumber,
-                StackTrace = includeStackTrace ? Environment.StackTrace : null
-            };
-
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
-#endif
-
-            WriteToFile("debug.log", logFormat.Serialize());
+            Info(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
 
         public void Warn(Exception exception, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
-            var logFormat = new LogFormat
-            {
-                MemberName = memberName,
-                Message = exception.Message,
-                SourceFilePath = sourceFilePath,
-                SourceLineNumber = sourceLineNumber,
-                StackTrace = includeStackTrace ? Environment.StackTrace : null
-            };
-
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
-#endif
-
-            WriteToFile("warn.log", logFormat.Serialize());
+            Warn(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
 
         public void Error(Exception exception, bool includeStackTrace = false, string memberName = "",
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
-            var logFormat = new LogFormat
-            {
-                MemberName = memberName,
-                Message = exception.Message,
-                SourceFilePath = sourceFilePath,
-                SourceLineNumber = sourceLineNumber,
-                StackTrace = includeStackTrace ? Environment.StackTrace : null
-            };
-
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
-#endif
-
-            WriteToFile("error.log", logFormat.Serialize());
+            Error(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
 
         public void Fatal(Exception exception, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
-            var logFormat = new LogFormat
-            {
-                MemberName = memberName,
-                Message = exception.Message,
-                SourceFilePath = sourceFilePath,
-                SourceLineNumber = sourceLineNumber,
-                StackTrace = includeStackTrace ? Environment.StackTrace : null
-            };
-
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine(logFormat.Serialize());
-#endif
-
-            WriteToFile("fatal.log", logFormat.Serialize());
+            Fatal(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
 
 
