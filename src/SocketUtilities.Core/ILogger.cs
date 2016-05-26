@@ -145,7 +145,7 @@ namespace SocketUtilities.Core
         [JsonProperty(PropertyName = "Member name")]
         public string MemberName { get; set; }
 
-        [JsonProperty(PropertyName = "Souce file path")]
+        [JsonProperty(PropertyName = "Source file path")]
         public string SourceFilePath { get; set; }
 
         [JsonProperty(PropertyName = "Source line number")]
