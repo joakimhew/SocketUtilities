@@ -23,6 +23,9 @@ namespace SocketUtilities.Core
         public void Debug(string message, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
+            if (!IsDebugActivated)
+                return;
+
             var logFormat = new LogFormat
             {
                 MemberName = memberName,
@@ -43,6 +46,9 @@ namespace SocketUtilities.Core
         public void Info(string message, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
+            if (!IsInfoActivated)
+                return;
+
             var logFormat = new LogFormat
             {
                 MemberName = memberName,
@@ -63,6 +69,9 @@ namespace SocketUtilities.Core
         public void Warn(string message, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
+            if (!IsWarnActivated)
+                return;
+
             var logFormat = new LogFormat
             {
                 MemberName = memberName,
@@ -84,6 +93,9 @@ namespace SocketUtilities.Core
         public void Error(string message, bool includeStackTrace = false, string memberName = "", 
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
+            if (!IsErrorActivated)
+                return;
+
             var logFormat = new LogFormat
             {
                 MemberName = memberName,
@@ -104,6 +116,9 @@ namespace SocketUtilities.Core
         public void Fatal(string message, bool includeStackTrace = false, string memberName = "",
             string sourceFilePath = "", int sourceLineNumber = 0)
         {
+            if(!IsFatalActivated)
+                return;
+
             var logFormat = new LogFormat
             {
                 MemberName = memberName,
@@ -151,6 +166,12 @@ namespace SocketUtilities.Core
         {
             Fatal(exception.Message, includeStackTrace, memberName, sourceFilePath, sourceLineNumber);
         }
+
+        public bool IsDebugActivated { get; set; } = true;
+        public bool IsInfoActivated { get; set; } = true;
+        public bool IsWarnActivated { get; set; } = true;
+        public bool IsErrorActivated { get; set; } = true;
+        public bool IsFatalActivated { get; set; } = true;
 
 
         private void WriteToFile(string fileName, string output)

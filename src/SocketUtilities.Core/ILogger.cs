@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.Net.Configuration;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 
 namespace SocketUtilities.Core
@@ -26,7 +28,7 @@ namespace SocketUtilities.Core
         /// <param name="memberName">The member name of the caller.</param>
         /// <param name="sourceFilePath">The full path to the source file where the logger is called</param>
         /// <param name="sourceLineNumber">The line number where the loggers is called</param>
-        void Info(string message, bool includeStackTrace = false, [CallerMemberName]string memberName = "", 
+        void Info(string message, bool includeStackTrace = false, [CallerMemberName]string memberName = "",
             [CallerFilePath]string sourceFilePath = "", [CallerLineNumber]int sourceLineNumber = 0);
 
         /// <summary>
@@ -61,6 +63,8 @@ namespace SocketUtilities.Core
         /// <param name="sourceLineNumber">The line number where the loggers is called</param>
         void Fatal(string message, bool includeStackTrace = false, [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
+
+
 
 
         /// <summary>
@@ -117,6 +121,12 @@ namespace SocketUtilities.Core
         /// <param name="sourceLineNumber">The line number where the loggers is called</param>
         void Fatal(Exception exception, bool includeStackTrace = false, [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0);
+
+        bool IsDebugActivated { get; set; }
+        bool IsInfoActivated { get; set; }
+        bool IsWarnActivated { get; set; }
+        bool IsErrorActivated { get; set; }
+        bool IsFatalActivated { get; set; }
     }
 
     internal class LogFormat
