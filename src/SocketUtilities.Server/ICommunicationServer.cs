@@ -12,7 +12,7 @@ namespace SocketUtilities.Server
         void Start();
         void Stop();
 
-        void Read();
+        void Read(Socket socket);
 
         void SendMessage(SocketMessage message);
 

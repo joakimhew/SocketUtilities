@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using SocketUtilities.Core;
 using SocketUtilities.Messaging;
 
 namespace SocketUtilities.Server
 {
     public class InternalServer : ICommunicationServer
     {
+        private readonly ILogger _logger;
 
         public InternalServer()
-            : this(IPAddress.Parse("127.0.0.1"), 8888)
+            : this(IPAddress.Parse("127.0.0.1"), 8888, new FileLogger(Environment.CurrentDirectory))
+        {
+        }
+
+        public InternalServer(int port)
+            : this(IPAddress.Parse("127.0.0.1"), port, new FileLogger(Environment.CurrentDirectory))
         {
         }
 
@@ -19,24 +27,24 @@ namespace SocketUtilities.Server
         }
 
         public InternalServer(string ipAddress, int port)
-            : this(IPAddress.Parse(ipAddress), port)
+            : this(IPAddress.Parse(ipAddress), port, new FileLogger(Environment.CurrentDirectory))
         {
         }
 
         public InternalServer(IPAddress ipAddress)
-            : this(ipAddress, 8888)
+            : this(ipAddress, 8888, new FileLogger(Environment.CurrentDirectory))
         {
         }
 
-        public InternalServer(IPAddress ipAddress, int port)
+        public InternalServer(IPAddress ipAddress, int port, ILogger logger)
         {
+            _logger = logger;
+
             TcpListener = new TcpListener(ipAddress, port);
             Socket = new Socket(SocketType.Stream, ProtocolType.IP);
 
             ServerId = Guid.NewGuid();
         }
-
-
 
         public TcpListener TcpListener { get; set; }
         public Socket Socket { get; set; }
@@ -45,24 +53,26 @@ namespace SocketUtilities.Server
         {
             try
             {
+
                 TcpListener.Start();
 
                 TcpListener.BeginAcceptSocket(AcceptSocketCallback, null);
+
             }
-            catch
+            catch(Exception e)
             {
-                //todo: Log exception
+                _logger.Warn(e.Message);
             }
         }
 
 
         private void AcceptSocketCallback(IAsyncResult ar)
         {
-            TcpListener.EndAcceptSocket(ar);
+            Socket socket = TcpListener.EndAcceptSocket(ar);
 
             ClientConnectedEvent?.Invoke(this);
 
-            Read();
+            Read(socket);
         }
 
         public void Stop()
@@ -70,26 +80,26 @@ namespace SocketUtilities.Server
             TcpListener.Stop();
         }
 
-        public void Read()
+        public void Read(Socket socket)
         {
             try
             {
                 SocketMessage socketMessage = new SocketMessage();
 
+                socket.BeginReceive(socketMessage.MessageBytes, 0, socketMessage.MessageBytes.Length,
+                    SocketFlags.None, Callback, socketMessage);
 
-                TcpListener.Server.BeginReceive(socketMessage.MessageBytes, 0, socketMessage.MessageBytes.Length,
-                    SocketFlags.None, Callback, null);
             }
 
-            catch
+            catch(Exception e)
             {
-                //todo: Log exception
+                _logger.Warn(e.Message);
             }
         }
 
         private void Callback(IAsyncResult ar)
         {
-            throw new NotImplementedException();
+            MessageRecievedEvent?.Invoke(this, (SocketMessage) ar.AsyncState);
         }
 
         public void SendMessage(SocketMessage message)
@@ -104,9 +114,9 @@ namespace SocketUtilities.Server
                     }, null);
             }
 
-            catch
+            catch(Exception e)
             {
-                //todo: Log exception
+                _logger.Warn(e.Message);
             }
         }
 

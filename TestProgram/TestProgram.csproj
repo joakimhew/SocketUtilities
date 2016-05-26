@@ -4,17 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F6BF110F-920B-4522-8158-FB0DD3366798}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocketUtilities.Messaging</RootNamespace>
-    <AssemblyName>SocketUtilities.Messaging</AssemblyName>
+    <RootNamespace>TestProgram</RootNamespace>
+    <AssemblyName>TestProgram</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <Framework Condition=" '$(Framework)' == '' ">NET_35_OR_GREATER</Framework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,31 +22,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants Condition=" '$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '3.5' ">NET_35_OR_GREATER</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '4.5' ">NET_45_OR_GREATER</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &lt; '3.5' ">LESS_THAN_NET_35</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &lt; '4.5' ">LESS_THAN_NET_45</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -57,22 +43,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AdditionalMethodInfoAttribute.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="MethodCallDto.cs" />
-    <Compile Include="MethodSignatureDto.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocketMessage.cs" />
-    <Compile Include="SocketMessageType.cs" />
-    <Compile Include="TypeDto.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SocketUtilities.Core\SocketUtilities.Core.csproj">
-      <Project>{173664AB-0713-4F41-9DA3-FD40290DB5BF}</Project>
-      <Name>SocketUtilities.Core</Name>
+    <ProjectReference Include="..\src\SocketUtilities.Client\SocketUtilities.Client.csproj">
+      <Project>{9B3F3588-40D8-49DC-91F2-1CFE058E458A}</Project>
+      <Name>SocketUtilities.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SocketUtilities.Messaging\SocketUtilities.Messaging.csproj">
+      <Project>{F6BF110F-920B-4522-8158-FB0DD3366798}</Project>
+      <Name>SocketUtilities.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SocketUtilities.Server\SocketUtilities.Server.csproj">
+      <Project>{276448A9-1114-4746-B2F6-59E410E52B4F}</Project>
+      <Name>SocketUtilities.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
