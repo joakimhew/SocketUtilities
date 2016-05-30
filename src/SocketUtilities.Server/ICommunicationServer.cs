@@ -1,22 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using SocketUtilities.Messaging;
 
 namespace SocketUtilities.Server
 {
     public interface ICommunicationServer
     {
-        TcpListener TcpListener { get; set; }
-        Socket Socket { get; set; }
         Guid ServerId { get; set; }
+        TcpListener TcpListener { get; set; }
+        Dictionary<Socket, Guid> Clients { get; set; }
+        Socket Socket { get; set; }
         void Start();
         void Stop();
-
-        void Read(Socket socket);
-
-        void SendMessage(SocketMessage message);
-
-        event Action<ICommunicationServer> ClientConnectedEvent;
-        event Action<ICommunicationServer, SocketMessage> MessageRecievedEvent;
+        void StartListening();
+        void Send(Socket socket, ISocketMessage messageBase);
+        void Broadcast(ISocketMessage messageBase);
+        event Action<Socket> ClientConnectedEvent;
+        event Action<ICommunicationServer, Guid> ClientIdentificationEvent;
+        event Action<ICommunicationServer, ISocketMessage> MessageRecievedEvent;
     }
 }

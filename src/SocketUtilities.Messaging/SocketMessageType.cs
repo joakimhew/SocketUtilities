@@ -1,7 +1,7 @@
 ﻿namespace SocketUtilities.Messaging
 {
     /// <summary>
-    /// Used to specify the type of message for <see cref="SocketMessage"/>
+    /// Used to specify the type of message for <see cref="SocketMessageBase"/>
     /// </summary>
     public enum SocketMessageType
     {

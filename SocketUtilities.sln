@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketUtilities.Core", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProgram", "TestProgram\TestProgram.csproj", "{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketUtilities.CommunicationTests", "tests\SocketUtilities.CommunicationTests\SocketUtilities.CommunicationTests.csproj", "{3175CE6D-4B18-47ED-AEEE-C867CB32316E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3175CE6D-4B18-47ED-AEEE-C867CB32316E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3175CE6D-4B18-47ED-AEEE-C867CB32316E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3175CE6D-4B18-47ED-AEEE-C867CB32316E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3175CE6D-4B18-47ED-AEEE-C867CB32316E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +66,6 @@ Global
 		{9B3F3588-40D8-49DC-91F2-1CFE058E458A} = {000C1FD5-8240-4294-9BB9-22E964FF47F6}
 		{173664AB-0713-4F41-9DA3-FD40290DB5BF} = {000C1FD5-8240-4294-9BB9-22E964FF47F6}
 		{28D8B4A4-C0F3-4CB5-8844-51FB211EA63B} = {000C1FD5-8240-4294-9BB9-22E964FF47F6}
+		{3175CE6D-4B18-47ED-AEEE-C867CB32316E} = {29882A38-40BF-4BE8-A5A2-643D3CC71ACE}
 	EndGlobalSection
 EndGlobal

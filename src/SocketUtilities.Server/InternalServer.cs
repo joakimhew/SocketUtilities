@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SocketUtilities.Core;
 using SocketUtilities.Messaging;
 
@@ -10,6 +16,8 @@ namespace SocketUtilities.Server
     public class InternalServer : ICommunicationServer
     {
         private readonly ILogger _logger;
+        private readonly ISocketMessage _socketMessage; 
+
 
         public InternalServer()
             : this(IPAddress.Parse("127.0.0.1"), 8888, new FileLogger(Environment.CurrentDirectory))
@@ -41,38 +49,30 @@ namespace SocketUtilities.Server
             _logger = logger;
 
             TcpListener = new TcpListener(ipAddress, port);
-            Socket = new Socket(SocketType.Stream, ProtocolType.IP);
+            _socketMessage = new StandardSocketMessage();
+            Clients = new Dictionary<Socket, Guid>();
 
             ServerId = Guid.NewGuid();
         }
 
+
+
         public TcpListener TcpListener { get; set; }
         public Socket Socket { get; set; }
+        public Dictionary<Socket, Guid> Clients { get; set; }
         public Guid ServerId { get; set; }
+
+
         public void Start()
         {
             try
             {
-
                 TcpListener.Start();
-
-                TcpListener.BeginAcceptSocket(AcceptSocketCallback, null);
-
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.Warn(e.Message);
             }
-        }
-
-
-        private void AcceptSocketCallback(IAsyncResult ar)
-        {
-            Socket socket = TcpListener.EndAcceptSocket(ar);
-
-            ClientConnectedEvent?.Invoke(this);
-
-            Read(socket);
         }
 
         public void Stop()
@@ -80,48 +80,136 @@ namespace SocketUtilities.Server
             TcpListener.Stop();
         }
 
-        public void Read(Socket socket)
+        public void StartListening()
         {
+            Socket = TcpListener.Server;
+            Socket.Listen(100);
+            Socket.BeginAccept(AcceptCallback, Socket);
+        }
+
+        private void AcceptCallback(IAsyncResult ar)
+        {
+            Socket listener = (Socket)ar.AsyncState;
+            Socket = listener.EndAccept(ar);
+
             try
             {
-                SocketMessage socketMessage = new SocketMessage();
+                Clients.Add(Socket, Guid.Empty);
+                ClientConnectedEvent?.Invoke(Socket);
 
-                socket.BeginReceive(socketMessage.MessageBytes, 0, socketMessage.MessageBytes.Length,
-                    SocketFlags.None, Callback, socketMessage);
-
+                Receive(Socket);
             }
-
-            catch(Exception e)
+            catch (SocketException s)
             {
-                _logger.Warn(e.Message);
+                _logger.Error(s.Message);
+            }
+            finally
+            {
+                StartListening();
             }
         }
 
-        private void Callback(IAsyncResult ar)
+        private void Receive(Socket socket)
         {
-            MessageRecievedEvent?.Invoke(this, (SocketMessage) ar.AsyncState);
+            StateObject state = new StateObject();
+            state.Socket = socket;
+            state.BufferSize = 8192;
+
+            lock (state)
+            {
+                socket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, ReadCallback, state);
+            }
         }
 
-        public void SendMessage(SocketMessage message)
+        public void ReadCallback(IAsyncResult ar)
         {
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket = state.Socket;
+            ISocketMessage message = new StandardSocketMessage();
+
             try
             {
-                TcpListener.Server.BeginSend(message.MessageBytes, 0, message.MessageBytes.Length, SocketFlags.None,
-                    ar =>
+                int bytesRead = Socket.EndReceive(ar);
+
+                if (bytesRead > 0)
+                {
+                    foreach (var msg in message.Deserialize(state.Buffer))
                     {
-                        TcpListener.Server.EndSend(ar);
+                        MessageRecievedEvent?.Invoke(this, msg);
+                    }
 
-                    }, null);
+                    Socket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, ReadCallback, state);
+                }
+
+                else
+                {
+                    if(state.StringBuilder.Length > 1)
+                        Console.WriteLine(state.StringBuilder.ToString());
+                }
+
             }
-
-            catch(Exception e)
+            catch (SocketException e)
             {
                 _logger.Warn(e.Message);
             }
         }
 
-        public event Action<ICommunicationServer> ClientConnectedEvent;
 
-        public event Action<ICommunicationServer, SocketMessage> MessageRecievedEvent;
+
+        public void Send(Socket socket, ISocketMessage messageBase)
+        {
+            try
+            {
+                if (socket.Connected)
+                {
+                    byte[] serialized = messageBase.Serialize();
+
+                    Socket.BeginSendTo(serialized, 0, serialized.Length, 0, socket.RemoteEndPoint, 
+                        SendCallback, socket);
+                }
+            }
+            catch (SocketException e)
+            {
+                _logger.Warn(e.Message);
+            }
+        }
+
+        private void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                Socket socket = (Socket)ar.AsyncState;
+                socket.EndSendTo(ar);
+            }
+            catch (Exception e)
+            {
+                _logger.Warn(e.Message);
+            }
+        }
+
+        public void Broadcast(ISocketMessage messageBase)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void Send(ISocketMessage messageBase)
+        {
+            try
+            {
+
+            }
+
+            catch (Exception e)
+            {
+                _logger.Warn(e.Message);
+            }
+        }
+
+        public event Action<Socket> ClientConnectedEvent;
+
+        public event Action<ICommunicationServer, Guid> ClientIdentificationEvent;
+
+        public event Action<ICommunicationServer, ISocketMessage> MessageRecievedEvent;
     }
 }
