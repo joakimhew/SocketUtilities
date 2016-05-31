@@ -80,7 +80,7 @@ namespace TestProgram
 
             for (int i = 0; i < 50; i++)
             {
-                socketMessage.Message = $"Hello from client! Message #{i+1}";
+                socketMessage.Message = $"Hello from client! Message #{i + 1}";
                 CommunicationClient.Send(socketMessage);
             }
         }

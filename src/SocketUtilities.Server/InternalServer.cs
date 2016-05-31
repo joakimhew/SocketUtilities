@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SocketUtilities.Core;
 using SocketUtilities.Messaging;
 
@@ -16,7 +10,7 @@ namespace SocketUtilities.Server
     public class InternalServer : ICommunicationServer
     {
         private readonly ILogger _logger;
-        private readonly ISocketMessage _socketMessage; 
+        private readonly ISocketMessage _socketMessage;
 
 
         public InternalServer()
@@ -112,19 +106,17 @@ namespace SocketUtilities.Server
         private void Receive(Socket socket)
         {
             StateObject state = new StateObject();
-            state.Socket = socket;
+            state.WorkSocket = socket;
             state.BufferSize = 8192;
 
-            lock (state)
-            {
-                socket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, ReadCallback, state);
-            }
+            socket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, ReadCallback, state);
+            
         }
 
         public void ReadCallback(IAsyncResult ar)
         {
             StateObject state = (StateObject)ar.AsyncState;
-            Socket = state.Socket;
+            Socket = state.WorkSocket;
             ISocketMessage message = new StandardSocketMessage();
 
             try
@@ -135,7 +127,21 @@ namespace SocketUtilities.Server
                 {
                     foreach (var msg in message.Deserialize(state.Buffer))
                     {
-                        MessageRecievedEvent?.Invoke(this, msg);
+                        switch (msg.MessageType)
+                        {
+                            case SocketMessageType.Methods:
+                                break;
+                            case SocketMessageType.MethodExecution:
+                                break;
+                            case SocketMessageType.Identity:
+                                ClientIdentificationEvent?.Invoke(this, Guid.Parse(msg.Message));
+                                break;
+                            case SocketMessageType.Normal:
+                                MessageRecievedEvent?.Invoke(this, msg);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
 
                     Socket.BeginReceive(state.Buffer, 0, state.BufferSize, 0, ReadCallback, state);
@@ -143,17 +149,13 @@ namespace SocketUtilities.Server
 
                 else
                 {
-                    if(state.StringBuilder.Length > 1)
-                        Console.WriteLine(state.StringBuilder.ToString());
                 }
-
             }
             catch (SocketException e)
             {
                 _logger.Warn(e.Message);
             }
         }
-
 
 
         public void Send(Socket socket, ISocketMessage messageBase)
@@ -164,8 +166,7 @@ namespace SocketUtilities.Server
                 {
                     byte[] serialized = messageBase.Serialize();
 
-                    Socket.BeginSendTo(serialized, 0, serialized.Length, 0, socket.RemoteEndPoint, 
-                        SendCallback, socket);
+                    Socket.BeginSendTo(serialized, 0, serialized.Length, 0, socket.RemoteEndPoint, SendCallback, socket);
                 }
             }
             catch (SocketException e)
@@ -178,7 +179,7 @@ namespace SocketUtilities.Server
         {
             try
             {
-                Socket socket = (Socket)ar.AsyncState;
+                Socket socket = (Socket) ar.AsyncState;
                 socket.EndSendTo(ar);
             }
             catch (Exception e)
@@ -197,7 +198,6 @@ namespace SocketUtilities.Server
         {
             try
             {
-
             }
 
             catch (Exception e)

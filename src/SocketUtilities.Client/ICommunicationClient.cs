@@ -18,6 +18,7 @@ namespace SocketUtilities.Client
         void BeginConnect(IPEndPoint endPoint);
         void SendIdentification();
         void Send(ISocketMessage socketMessageBase);
+        void Send(byte[] message);
         void Disconnect();
         event Action<ICommunicationClient> ConnectionEstablishedEvent;
     }

@@ -6,29 +6,23 @@ namespace SocketUtilities.Core
 {
     public class StateObject
     {
-        public Socket Socket = null;
-
-        private int _bufferSize;
+        public Socket WorkSocket = null;
         public int ReadOffset = 0;
+        public StringBuilder sb = new StringBuilder();
 
-        public StringBuilder StringBuilder = new StringBuilder();
-
-        public StateObject(int bufferSize = 2048)
-        {
-            BufferSize = bufferSize;
-        }
-
+        private int _bufferSize = 0;
         public int BufferSize
         {
             set
             {
                 _bufferSize = value;
-                Buffer = new byte[_bufferSize];
+                _buffer = new byte[_bufferSize];
             }
 
             get { return _bufferSize; }
         }
 
-        public byte[] Buffer { get; set; }
+        private byte[] _buffer;
+        public byte[] Buffer => _buffer;
     }
 }

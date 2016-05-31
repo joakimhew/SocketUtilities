@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SocketUtilities.Core;
+
+// TODO: Add logic to check for <EOF> at the end of buffer and add data to old buffer if not found.
 
 namespace SocketUtilities.Messaging
 {
@@ -16,6 +13,7 @@ namespace SocketUtilities.Messaging
     {
 
         private readonly byte[] _eof;
+        private object _lockingObject = new Object();
 
         public StandardSocketMessage()
             : this(Encoding.ASCII, SocketMessageType.Normal)
@@ -81,31 +79,35 @@ namespace SocketUtilities.Messaging
                 if (!isEof)
                     continue;
 
-                byte[] messageBytes;
-
-                if (pos - readBytes == 0)
+                lock (_lockingObject)
                 {
-                    messageBytes = new byte[readBytes];
-                    Array.ConstrainedCopy(buffer, pos - readBytes, messageBytes, 0, readBytes);
-                    readBytes = 0;
+                    byte[] messageBytes;
+
+                    if (pos - readBytes == 0)
+                    {
+                        messageBytes = new byte[readBytes];
+                        Array.ConstrainedCopy(buffer, pos - readBytes, messageBytes, 0, readBytes);
+                        readBytes = 0;
+                    }
+
+                    else
+                    {
+                        int messageLength = readBytes - _eof.Length;
+                        messageBytes = new byte[messageLength];
+                        Array.ConstrainedCopy(buffer, pos - messageLength, messageBytes, 0, messageLength);
+                        readBytes = 0;
+                    }
+
+
+                    string messageString = Encoding.GetString(messageBytes);
+                    JsonSerializer jsonSerializer = new JsonSerializer();
+                    TextReader textReader = new StringReader(messageString);
+                    JsonReader jsonReader = new JsonTextReader(textReader);
+
+                    yield return
+                        jsonSerializer.Deserialize<StandardSocketMessage>(jsonReader);
                 }
-
-                else
-                {
-                    int messageLength = readBytes - _eof.Length;
-                    messageBytes = new byte[messageLength];
-                    Array.ConstrainedCopy(buffer, pos - messageLength, messageBytes, 0, messageLength);
-                    readBytes = 0;
-                }
-
-
-                string messageString = Encoding.GetString(messageBytes);
-                JsonSerializer jsonSerializer = new JsonSerializer();
-                TextReader textReader = new StringReader(messageString);
-                JsonReader jsonReader = new JsonTextReader(textReader);
-
-                yield return
-                    jsonSerializer.Deserialize<StandardSocketMessage>(jsonReader);
+                
             }
         }
 

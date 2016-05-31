@@ -97,7 +97,25 @@ namespace SocketUtilities.Client
 
             catch (Exception e)
             {
+                _logger.Warn(e.Message);
+            }
+        }
 
+        public void Send(byte[] message)
+        {
+            try
+            {
+                Socket client = TcpClient.Client;
+
+                if (!client.Connected)
+                    return;
+
+                client.BeginSend(message, 0, message.Length, 0, SendMessageCallback, client);
+            }
+
+            catch(Exception e)
+            {
+                _logger.Warn(e.Message);
             }
         }
 

@@ -9,7 +9,7 @@ namespace SocketUtilities.Messaging
         Encoding Encoding { get; set; }
         SocketMessageType MessageType { get; set; }
         string Message { get; set; }
-        IEnumerable<ISocketMessage> Deserialize(byte[] buffer); 
+        IEnumerable<ISocketMessage> Deserialize(byte[] buffer);
         byte[] Serialize();
     }
 }
