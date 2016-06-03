@@ -176,6 +176,9 @@ namespace SocketUtilities.Core
 
         private void WriteToFile(string fileName, string output)
         {
+            if (!Directory.Exists(_rootLogFolder))
+                throw new DirectoryNotFoundException("The directory provided for the FileLogger does not exist!");
+
             var filePath = $"{_rootLogFolder}\\{fileName}";
 
             if (!File.Exists(filePath))
