@@ -64,7 +64,7 @@
     <Compile Include="MethodSignatureDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketMessageType.cs" />
-    <Compile Include="StandardSocketMessage.cs" />
+    <Compile Include="JsonSocketMessage.cs" />
     <Compile Include="TypeDto.cs" />
   </ItemGroup>
   <ItemGroup>

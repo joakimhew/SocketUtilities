@@ -21,5 +21,6 @@ namespace SocketUtilities.Server
         event Action<Socket> ClientConnectedEvent;
         event Action<ICommunicationServer, Guid> ClientIdentificationEvent;
         event Action<ICommunicationServer, ISocketMessage> MessageRecievedEvent;
+        event Action<ICommunicationServer, MethodSignatureDto> MethodRecievedEvent;
     }
 }

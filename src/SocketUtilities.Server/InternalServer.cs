@@ -129,6 +129,10 @@ namespace SocketUtilities.Server
                     {
                         switch (msg.MessageType)
                         {
+                            case SocketMessageType.Method:
+                                MethodRecievedEvent?.Invoke(this, 
+                                    MethodSignatureDto.DeserializeMethodObject(msg.Message));
+                                break;
                             case SocketMessageType.Methods:
                                 break;
                             case SocketMessageType.MethodExecution:
@@ -207,9 +211,8 @@ namespace SocketUtilities.Server
         }
 
         public event Action<Socket> ClientConnectedEvent;
-
         public event Action<ICommunicationServer, Guid> ClientIdentificationEvent;
-
         public event Action<ICommunicationServer, ISocketMessage> MessageRecievedEvent;
+        public event Action<ICommunicationServer, MethodSignatureDto> MethodRecievedEvent;
     }
 }

@@ -6,6 +6,11 @@
     public enum SocketMessageType
     {
         /// <summary>
+        /// Used when sending information about a single method through the socket. 
+        /// Usually in the format of <see cref="Newtonsoft.Json">Json</see>
+        /// </summary>
+        Method,
+        /// <summary>
         /// Used when sending information about methods through the socket. 
         /// Usually in the format of <see cref="Newtonsoft.Json">Json</see>
         /// </summary>
