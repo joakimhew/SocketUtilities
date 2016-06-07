@@ -5,29 +5,27 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
-// TODO: Add logic to check for <EOF> at the end of buffer and add data to old buffer if not found.
-
 namespace SocketUtilities.Messaging
 {
-    public class StandardSocketMessage : ISocketMessage
+    public class JsonSocketMessage : ISocketMessage
     {
 
         private readonly byte[] _eof;
         private object _lockingObject = new Object();
 
-        public StandardSocketMessage()
+        public JsonSocketMessage()
             : this(Encoding.ASCII, SocketMessageType.Normal)
         {
 
         }
 
-        public StandardSocketMessage(SocketMessageType messageType)
+        public JsonSocketMessage(SocketMessageType messageType)
             : this(Encoding.ASCII, messageType)
         {
 
         }
 
-        public StandardSocketMessage(Encoding encoding, SocketMessageType messageType)
+        public JsonSocketMessage(Encoding encoding, SocketMessageType messageType)
         {
             Encoding = encoding;
             MessageType = messageType;
@@ -105,7 +103,7 @@ namespace SocketUtilities.Messaging
                     JsonReader jsonReader = new JsonTextReader(textReader);
 
                     yield return
-                        jsonSerializer.Deserialize<StandardSocketMessage>(jsonReader);
+                        jsonSerializer.Deserialize<JsonSocketMessage>(jsonReader);
                 }
                 
             }

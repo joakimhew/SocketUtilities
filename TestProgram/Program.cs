@@ -76,7 +76,7 @@ namespace TestProgram
 
         private static void SendTestMessages()
         {
-            ISocketMessage socketMessage = new StandardSocketMessage();
+            ISocketMessage socketMessage = new JsonSocketMessage();
 
             for (int i = 0; i < 50; i++)
             {

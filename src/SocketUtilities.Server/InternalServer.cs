@@ -43,7 +43,7 @@ namespace SocketUtilities.Server
             _logger = logger;
 
             TcpListener = new TcpListener(ipAddress, port);
-            _socketMessage = new StandardSocketMessage();
+            _socketMessage = new JsonSocketMessage();
             Clients = new Dictionary<Socket, Guid>();
 
             ServerId = Guid.NewGuid();
@@ -117,7 +117,7 @@ namespace SocketUtilities.Server
         {
             StateObject state = (StateObject)ar.AsyncState;
             Socket = state.WorkSocket;
-            ISocketMessage message = new StandardSocketMessage();
+            ISocketMessage message = new JsonSocketMessage();
 
             try
             {
